@@ -32,8 +32,8 @@ Customers are scored on a scale of 1–4 across each metric, combined into an RF
 
 ## 📊 Dataset Overview
 
-The project utilizes the **Online Retail** dataset sourced from the UCI Machine Learning Repository.
-[ UCI Machine Learning Repository – Online Retail Dataset](https://archive.ics.uci.edu/dataset/352/online+retail)
+The project utilizes the **Online Retail** dataset sourced from
+[ the UCI Machine Learning Repository.](https://archive.ics.uci.edu/dataset/352/online+retail)
 
 ### Dataset Summary
 
