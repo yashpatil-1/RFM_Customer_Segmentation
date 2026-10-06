@@ -1,0 +1,37 @@
+RFM CUSTOMER SEGMENTATION - BUSINESS INSIGHTS
+============================================================
+
+1. Revenue Concentration
+Champions and Loyal Customers represent 30.36% of customers and contribute 73.01% of total revenue.
+
+Business implication: These customers should be prioritized for retention, loyalty programs, personalized offers and high-value engagement campaigns.
+
+2. Largest Customer Segment
+Hibernating / Lost is the largest segment with 1,135 customers (26.16% of the customer base).
+
+Business implication: This segment represents a major opportunity for targeted engagement and customer migration.
+
+3. Highest Revenue Segment
+Champions contributes 49.78% of total revenue.
+
+Business implication: Protecting this segment should be a major customer retention priority.
+
+4. Highest Average Customer Value
+Champions has the highest average monetary value at £9,047.80 per customer.
+
+Business implication: Customers in this segment can be targeted with premium experiences, cross-selling and high-value loyalty initiatives.
+
+5. At-Risk Customer Opportunity
+The At Risk segment contains 449 customers and represents 10.75% of total revenue.
+
+Business implication: A targeted reactivation campaign could help recover customers showing declining engagement.
+
+6. Recommended Marketing Strategy by Segment
+------------------------------------------------------------
+Champions: Reward loyalty, provide VIP benefits, early access and personalized offers.
+Loyal Customers: Strengthen retention through loyalty programs, cross-selling and personalized recommendations.
+At Risk: Launch win-back campaigns, personalized offers and reactivation messaging.
+Hibernating / Lost: Test low-cost reactivation campaigns while controlling marketing spend.
+Potential Loyalists: Increase purchase frequency using targeted promotions, bundles and loyalty incentives.
+Need Attention: Use targeted engagement campaigns to increase purchase frequency and recency.
+New Customers: Focus on onboarding, second-purchase conversion and early engagement.
