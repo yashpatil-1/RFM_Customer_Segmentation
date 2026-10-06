@@ -1,276 +1,178 @@
-# RFM Customer Segmentation
+# 🛒 Customer Segmentation Using RFM Analysis
 
-An end-to-end customer analytics project that uses **RFM (Recency, Frequency, Monetary) analysis** to identify customer segments, measure customer value, and generate actionable marketing strategies.
+An end-to-end customer analytics project that uses **RFM (Recency, Frequency, Monetary)** analysis to segment customers, evaluate customer lifetime value, and generate actionable, data-driven marketing strategies.
 
-The project transforms raw retail transaction data into customer-level insights through data cleaning, RFM scoring, customer segmentation, visualization, and automated business insights.
+This project converts raw e-commerce transaction data into customer-level business insights through automated data cleaning, metric scoring, segment profiling, visualization, and strategic reporting.
 
 ---
 
 ## 📌 Project Overview
 
-Customer transaction data often contains thousands of individual purchases, making it difficult to identify which customers are valuable, inactive, loyal, or at risk.
+Analyzing thousands of individual transaction logs makes it difficult for businesses to pinpoint high-value customers, identify churn risk, or target marketing budgets effectively.
 
-This project addresses that problem by building an automated **RFM Customer Segmentation Pipeline**.
+This pipeline solves that challenge by transforming transaction logs into three core dimensions:
 
-The workflow analyzes:
+- **Recency ($R$)**: How recently a customer made a purchase (days since last order).
+- **Frequency ($F$)**: How often a customer purchased (total unique orders).
+- **Monetary ($M$)**: How much money a customer spent in total transaction value.
 
-- **Recency** — How recently a customer purchased
-- **Frequency** — How often a customer purchased
-- **Monetary** — How much a customer spent
-
-Customers are then scored and grouped into actionable segments that can support retention, loyalty, reactivation, and targeted marketing strategies.
+Customers are scored on a scale of 1–4 across each metric, combined into an RFM profile, and categorized into distinct business segments.
 
 ---
 
-## 🎯 Business Objective
+## 🎯 Business Objectives
 
-The primary objectives of this project are to:
-
-- Identify high-value customers
-- Understand customer purchasing behaviour
-- Detect customers at risk of becoming inactive
-- Identify potential loyal customers
-- Quantify revenue contribution by customer segment
-- Develop segment-specific marketing strategies
-- Automate the complete customer segmentation workflow
+- **Identify High-Value Customers**: Isolate top-tier revenue drivers for VIP retention.
+- **Analyze Purchasing Patterns**: Measure customer engagement through recency and order frequency.
+- **Mitigate Customer Churn**: Detect slipping customers early to run targeted re-engagement campaigns.
+- **Quantify Revenue Concentration**: Determine segment contribution to overall gross revenue.
+- **Automate Business Intelligence**: Provide an end-to-end executable pipeline from raw input to generated figures and reports.
 
 ---
 
-## 📊 Dataset
+## 📊 Dataset Overview
 
-The project uses the **Online Retail** transaction dataset.
+The project utilizes the **Online Retail** dataset sourced from the UCI Machine Learning Repository.
 
-### Dataset characteristics
+### Dataset Summary
 
 | Attribute | Value |
-|---|---:|
-| Original transactions | 541,909 |
-| Columns | 8 |
-| Countries | 38 |
-| Unique customers | 4,372 |
-| Date range | Dec 2010 – Dec 2011 |
+| :--- | :--- |
+| **Original Transactions** | 541,909 rows |
+| **Cleaned Transactions** | 392,692 rows |
+| **Unique Customers** | 4,338 |
+| **Unique Invoices** | 18,532 |
+| **Countries Covered** | 37 |
+| **Total Revenue Processed** | £8.89 Million |
+| **Date Range** | Dec 2010 – Dec 2011 |
 
-### Main attributes
-
-- InvoiceNo
-- StockCode
-- Description
-- Quantity
-- InvoiceDate
-- UnitPrice
-- CustomerID
-- Country
+### Attributes
+- `InvoiceNo`: Unique order identifier (prefixed with "C" if cancelled).
+- `StockCode`: Product/item code.
+- `Description`: Item name.
+- `Quantity`: Quantities per transaction.
+- `InvoiceDate`: Timestamp of order creation.
+- `UnitPrice`: Product price per unit in GBP (£).
+- `CustomerID`: Unique customer identifier.
+- `Country`: Customer location.
 
 ---
 
-## 🧹 Data Cleaning
+## 🧹 Data Cleaning & Preprocessing
 
-The raw transaction data was processed through several data-quality steps.
+To ensure statistical integrity, raw transactions undergo automated cleaning steps:
 
-### Cleaning rules
+1. **Missing Data Handling**: Removed rows without valid `CustomerID` values.
+2. **Cancellation Filtering**: Removed cancelled invoices (invoices prefixed with 'C').
+3. **Invalid Transaction Removal**: Filtered out non-positive quantities ($Quantity \le 0$) and unit prices ($UnitPrice \le 0$).
+4. **Deduplication**: Stripped identical duplicate records.
+5. **Feature Engineering**: Generated total transaction value per line item:
+   $$\text{TransactionValue} = \text{Quantity} \times \text{UnitPrice}$$
 
-1. Removed transactions with missing Customer IDs
-2. Removed cancelled invoices
-3. Removed transactions with non-positive quantities
-4. Removed transactions with non-positive unit prices
-5. Removed duplicate transactions
-6. Created `TransactionValue`
+---
 
-### Transaction Value
+## 📐 RFM Analysis & Scoring
+
+### Metrics Snapshot
+
+| Metric | Average | Median |
+| :--- | :---: | :---: |
+| **Recency** | 92.54 days | 51.00 days |
+| **Frequency** | 4.27 orders | 2.00 orders |
+| **Monetary** | £2,048.69 | £668.57 |
+
+> **Key Insight**: The significant variance between the average (£2,048.69) and median (£668.57) monetary values indicates a heavily right-skewed spend distribution.
+
+### Scoring Logic
+Customers are assigned a score from 1 to 4 across each dimension based on quartile boundaries:
+
+- **Recency**: Lower number of days $\rightarrow$ **Higher Score (4)**
+- **Frequency**: Higher order counts $\rightarrow$ **Higher Score (4)**
+- **Monetary**: Higher spending amount $\rightarrow$ **Higher Score (4)**
+
+Scores are aggregated into an RFM Profile (e.g., `444` represents maximum engagement across all three vectors). Out of **4,338** scored customers, the most frequent individual profile was **444** (489 customers).
+
+---
+
+## 👥 Customer Segments & Business Impact
+
+| Segment | Customers | Customer % | Revenue % | Core Definition |
+| :--- | :---: | :---: | :---: | :--- |
+| **🏆 Champions** | 489 | 11.27% | 49.78% | High recency, high frequency, highest spenders. |
+| **💛 Loyal Customers** | 828 | 19.09% | 23.23% | Regular buyers with high monetary contribution. |
+| **⚠️ At Risk** | 449 | 10.35% | 10.75% | Previously high spenders who haven't bought recently. |
+| **😴 Hibernating / Lost** | 1,135 | 26.16% | 5.48% | Low recency, low frequency, low overall spend. |
+| **🌟 Potential Loyalists** | 442 | 10.19% | 5.29% | Recent buyers with average purchasing frequency. |
+| **🔔 Need Attention** | 875 | 20.17% | 5.09% | Above-average recency and frequency, but at risk of dropping off. |
+| **🆕 New Customers** | 120 | 2.77% | 0.38% | Recent buyers with low overall transaction counts. |
+
+---
+
+## 🔥 Key Business Findings
+
+1. **Extreme Revenue Concentration**: **30.36%** of the customer base (*Champions* + *Loyal Customers*) accounts for **73.01%** of total revenue.
+2. **Champions dominate profitability**: The *Champions* segment alone drives nearly **50% of revenue** while representing only **11.27%** of the total customer base.
+3. **Significant Inactive Footprint**: Over **26%** of customers fall into *Hibernating / Lost*, bringing in under **6%** of gross revenue.
+4. **Reactivation Opportunity**: The *At Risk* segment controls **10.75%** of historical revenue, representing a primary focus area for win-back campaigns.
+
+---
+
+## 🎯 Strategic Recommendations
+
+| Segment | Recommended Action Plan |
+| :--- | :--- |
+| **Champions** | VIP rewards programs, early access to product launches, personalized perks, and review requests. |
+| **Loyal Customers** | Upselling, cross-selling high-margin items, and tier-based loyalty incentives. |
+| **Potential Loyalists** | Targeted product bundles, personalized recommendations, and membership invitations. |
+| **New Customers** | Dedicated onboarding flows, welcome discount codes for second purchases. |
+| **At Risk** | Personalized re-engagement emails, high-value discount vouchers, and feedback surveys. |
+| **Need Attention** | Time-limited promotions, re-activation offers, and targeted feature recommendations. |
+| **Hibernating / Lost** | Low-cost automated email sequences, win-back discounts, or minimal marketing spend focus. |
+
+---
+
+## 📈 Generated Visual Analytics
+
+Running the pipeline automatically saves the following plots to the `visuals/` directory:
+
+- `customer_distribution.png`: Bar chart of customer volume per segment.
+- `revenue_contribution.png`: Pareto breakdown of total monetary contribution by segment.
+- `rfm_score_distribution.png`: Histogram detailing overall RFM score distribution.
+- `recency_vs_monetary.png`: Scatter plot comparing days since last purchase against spend.
+- `frequency_vs_monetary.png`: Relationship between total order count and lifetime value.
+- `segment_rfm_profile.png`: Heatmap/Bar summary of mean $R, F, M$ values per segment.
+
+---
+
+## ⚙️ Project Architecture
 
 ```text
-TransactionValue = Quantity × UnitPrice
-
-Clean dataset
-
-After cleaning:
-
-392,692 transactions
-4,338 customers
-18,532 unique invoices
-37 countries
-£8.89M total transaction revenue
-📐 RFM Analysis
-
-RFM analysis was performed at the customer level.
-
-Recency
-
-Measures the number of days since the customer's most recent purchase.
-
-Lower Recency indicates more recent customer activity.
-
-Frequency
-
-Measures the number of unique invoices/orders associated with the customer.
-
-Higher Frequency indicates more frequent purchasing.
-
-Monetary
-
-Measures the total transaction value generated by the customer.
-
-Higher Monetary value indicates greater customer value.
-
-RFM Snapshot
-Metric	Average	Median
-Recency	92.54 days	51 days
-Frequency	4.27 orders	2 orders
-Monetary	£2,048.69	£668.57
-
-The large difference between average and median Monetary value indicates a highly skewed customer-value distribution, with a relatively small number of customers generating substantial revenue.
-
-⭐ RFM Scoring
-
-Each customer receives a score from 1 to 4 for each RFM dimension.
-
-Scoring logic
-Recency:
-More recent → higher score
-Frequency:
-More purchases → higher score
-Monetary:
-Higher spending → higher score
-
-The three scores are combined into an RFM profile.
-
-Example:
-
-444
-
-represents a customer with strong Recency, Frequency, and Monetary scores.
-
-RFM Results
-Customers scored: 4,338
-Average RFM score: 7.51 / 12
-Highest possible score: 12
-Lowest possible score: 3
-
-The most common profile was:
-
-444 → 489 customers
-👥 Customer Segmentation
-
-Customers were grouped into seven business-oriented segments based on their RFM scores.
-
-Segment	Customers	Customer %	Revenue %
-Champions	489	11.27%	49.78%
-Loyal Customers	828	19.09%	23.23%
-At Risk	449	10.35%	10.75%
-Hibernating / Lost	1,135	26.16%	5.48%
-Potential Loyalists	442	10.19%	5.29%
-Need Attention	875	20.17%	5.09%
-New Customers	120	2.77%	0.38%
-🔥 Key Business Findings
-1. Strong Revenue Concentration
-
-30.36% of customers generate 73.01% of total revenue.
-
-This highlights the importance of protecting high-value customers through retention and loyalty initiatives.
-
-2. Champions Drive Revenue
-
-Champions represent only:
-
-11.27% of customers
-
-but contribute:
-
-49.78% of revenue.
-
-This segment represents the highest-priority customer group.
-
-3. Large Inactive Customer Base
-
-Hibernating / Lost is the largest segment, representing:
-
-26.16% of customers
-
-but only:
-
-5.48% of revenue.
-
-This indicates a large population of low-engagement customers.
-
-4. At-Risk Revenue Opportunity
-
-The At Risk segment contains:
-
-10.35% of customers
-
-and contributes:
-
-10.75% of revenue.
-
-This makes the segment a potential target for customer win-back and reactivation campaigns.
-
-🎯 Marketing Strategy by Segment
-Segment	Recommended Strategy
-Champions	VIP rewards, early access, personalized offers
-Loyal Customers	Loyalty programs, cross-selling, personalized recommendations
-Potential Loyalists	Bundles, targeted promotions, loyalty incentives
-New Customers	Onboarding and second-purchase campaigns
-At Risk	Win-back campaigns and personalized reactivation
-Need Attention	Targeted engagement and purchase-frequency campaigns
-Hibernating / Lost	Low-cost reactivation campaigns
-📈 Visual Analytics
-
-The project automatically generates six visualizations:
-
-Customer Distribution
-
-Shows the number of customers in each segment.
-
-Revenue Contribution
-
-Shows how much revenue each segment contributes.
-
-RFM Score Distribution
-
-Shows the distribution of overall RFM scores across customers.
-
-Recency vs Monetary
-
-Highlights the relationship between purchase recency and customer value.
-
-Frequency vs Monetary
-
-Shows the relationship between purchase frequency and total customer spending.
-
-Segment RFM Profile
-
-Compares average RFM metrics across customer segments.
-
-All visualizations are automatically saved in:
-
-visuals/
-⚙️ Project Architecture
 RFM Customer Segmentation/
 │
 ├── data/
-│   ├── online_retail_II.xlsx
-│   ├── clean_retail_transactions.csv
-│   ├── rfm.csv
-│   ├── rfm_scored.csv
-│   ├── customer_segments.csv
-│   └── segment_summary.csv
+│   ├── online_retail_II.xlsx        # Raw input transaction dataset
+│   ├── clean_retail_transactions.csv# Filtered dataset post cleaning
+│   ├── rfm.csv                      # Raw RFM metric values per customer
+│   ├── rfm_scored.csv               # Customer RFM scores (1-4 scale)
+│   ├── customer_segments.csv        # Final dataset with assigned segments
+│   └── segment_summary.csv          # Aggregate metrics per segment
 │
-├── notebooks/
+├── notebooks/                       # Exploratory analysis and scratchpads
 │
 ├── src/
-│   ├── data_inspection.py
-│   ├── data_quality.py
-│   ├── data_cleaning.py
-│   ├── rfm_analysis.py
-│   ├── rfm_scoring.py
-│   ├── customer_segmentation.py
-│   ├── visualizations.py
-│   └── business_insights.py
+│   ├── data_inspection.py           # Initial data structure and schema evaluation
+│   ├── data_quality.py              # Anomaly and missing value check routines
+│   ├── data_cleaning.py             # Preprocessing & cleaning pipeline
+│   ├── rfm_analysis.py              # RFM metric calculation algorithms
+│   ├── rfm_scoring.py               # Scoring logic implementation
+│   ├── customer_segmentation.py     # Segment mapping logic
+│   ├── visualizations.py            # Chart generation scripts
+│   └── business_insights.py         # Automated summary and report generator
 │
 ├── outputs/
-│   └── business_insights.txt
+│   └── business_insights.txt        # Text summary of generated insights
 │
-├── visuals/
+├── visuals/                         # Saved figures and visualizations
 │   ├── customer_distribution.png
 │   ├── revenue_contribution.png
 │   ├── rfm_score_distribution.png
@@ -278,92 +180,70 @@ RFM Customer Segmentation/
 │   ├── frequency_vs_monetary.png
 │   └── segment_rfm_profile.png
 │
-├── main.py
-├── requirements.txt
-├── README.md
+├── main.py                          # Full end-to-end pipeline launcher
+├── requirements.txt                 # Python dependencies
+├── README.md                        # Documentation
 └── .gitignore
-🚀 Running the Project
-1. Clone the repository
-git clone <repository-url>
+```
+
+---
+
+## 🚀 Execution & Setup
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YOUR_USERNAME/RFM-Customer-Segmentation.git
 cd RFM-Customer-Segmentation
-2. Create a virtual environment
+```
+
+### 2. Set Up Virtual Environment
+
+**macOS / Linux:**
+```bash
 python3 -m venv .venv
-3. Activate the environment
-
-macOS / Linux:
-
 source .venv/bin/activate
+```
 
-Windows:
-
+**Windows:**
+```cmd
+python -m venv .venv
 .venv\Scripts\activate
-4. Install dependencies
+```
+
+### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
-5. Run the complete pipeline
+```
+
+### 4. Execute the Automated Pipeline
+```bash
 python main.py
+```
 
-The pipeline automatically performs:
+#### Executed Stages:
+$$\text{Data Inspection} \longrightarrow \text{Quality Check} \longrightarrow \text{Cleaning} \longrightarrow \text{RFM Computation} \longrightarrow \text{Scoring} \longrightarrow \text{Segmentation} \longrightarrow \text{Visualization} \longrightarrow \text{Report Generation}$$
 
-Data Inspection
-      ↓
-Data Quality Analysis
-      ↓
-Data Cleaning
-      ↓
-RFM Calculation
-      ↓
-RFM Scoring
-      ↓
-Customer Segmentation
-      ↓
-Visualization Generation
-      ↓
-Business Insight Generation
-🛠️ Technologies Used
-Python
-Pandas
-NumPy
-Matplotlib
-Seaborn
-OpenPyXL
-Jupyter Notebook
-Git & GitHub
-💡 Analytical Approach
+---
 
-The project combines:
+## 🛠️ Tools & Technologies
 
-Data Cleaning
-Exploratory Data Analysis
-Customer Analytics
-RFM Analysis
-Customer Segmentation
-Marketing Analytics
-Business Intelligence
-Data Visualization
-Automated Reporting
+- **Language**: Python 3.8+
+- **Data Manipulation**: Pandas, NumPy
+- **Data Visualization**: Matplotlib, Seaborn
+- **Excel Processing**: OpenPyXL
+- **Environment**: Jupyter Notebook, VS Code
+- **Version Control**: Git, GitHub
 
-The objective is not only to identify customer groups, but also to translate analytical findings into actionable business strategies.
+---
 
-📌 Project Outcome
+## 👤 Author
 
-The final pipeline converts raw retail transaction data into a structured customer intelligence workflow.
-
-It enables businesses to:
-
-Identify high-value customers
-Prioritize retention efforts
-Detect at-risk customers
-Identify potential loyalists
-Understand revenue concentration
-Develop targeted customer strategies
-Automate recurring customer segmentation analysis
-👤 Author
-
-Yash Patil
-
-MBA Tech – Computer Engineering
+**Yash Patil**  
+*MBA Tech – Computer Engineering*  
 NMIMS
 
-📄 License
+---
 
-This project is intended for educational, analytical, and portfolio purposes.
+## 📄 License
+
+This project is open-source and intended for educational, analytical, and portfolio presentation purposes.
